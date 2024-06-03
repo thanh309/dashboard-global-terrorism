@@ -1,4 +1,6 @@
 *.csv
+*.xlsx
+*.pkl
 practice/
 assets/
 practice.py
