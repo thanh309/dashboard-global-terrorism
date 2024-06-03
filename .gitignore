@@ -1,1 +1,7 @@
 *.csv
+practice/
+assets/
+practice.py
+pages/__pycache__/
+
+env/
