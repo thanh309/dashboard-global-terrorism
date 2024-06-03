@@ -11,7 +11,7 @@ df = pd.read_csv('assets/data.csv', encoding='ISO-8859-1')
 all_columns = df.columns.tolist()
 
 layout = html.Div([
-    html.H2("Global Terrorism Dataset", style={'text-align': 'center'}), 
+    html.H2("Global Terrorism Database", style={'text-align': 'center'}), 
     html.Div([
         html.Label('Select columns to display:', style={'display': 'block', 'text-align': 'center'}),  
         dcc.Dropdown(

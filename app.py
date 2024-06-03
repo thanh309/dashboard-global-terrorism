@@ -7,7 +7,7 @@ import pandas as pd
 df = pd.read_csv('assets/data.csv', encoding='ISO-8859-1')
 
 # Initialize the Dash app
-app = Dash(__name__, external_stylesheets=[dbc.themes.VAPOR], use_pages=True)
+app = Dash(__name__, external_stylesheets=[dbc.themes.COSMO], use_pages=True)
 app.title = "Global Terrorism Dashboard"
 app.layout = html.Div([
     html.H1(
