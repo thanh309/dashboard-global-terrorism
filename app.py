@@ -4,7 +4,8 @@ import dash_bootstrap_components as dbc
 import plotly.express as px
 import pandas as pd
 
-df = pd.read_csv('assets/data.csv', encoding='ISO-8859-1')
+# df = pd.read_csv('assets/data.csv', encoding='ISO-8859-1')
+df = pd.read_pickle('assets/cleaned_data.pkl')
 
 # Initialize the Dash app
 app = Dash(__name__, external_stylesheets=[dbc.themes.VAPOR], use_pages=True)
