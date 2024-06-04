@@ -5,6 +5,7 @@ import dash_bootstrap_components as dbc
 dash.register_page(__name__)
 
 layout = html.Div([
+    html.Img(src='/assets/terrorism.jpg', style={'width': '100%', 'height': 'auto'}),
     html.Br(),
     dbc.Card(
         dbc.CardBody(
