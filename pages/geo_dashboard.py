@@ -3,7 +3,7 @@ from dash import Dash, dcc, html, Input, Output, callback
 import plotly.express as px
 import pandas as pd
 
-dash.register_page(__name__)
+# dash.register_page(__name__)
 
 layout = html.Div([
     html.H1('Geographical Dashboard'),
@@ -19,9 +19,10 @@ layout = html.Div([
     html.Div(id='analytics-output'),
 ])
 
-@callback(
-    Output('analytics-output', 'children'),
-    Input('analytics-input', 'value')
-)
-def update_city_selected(input_value):
-    return f'You selected: {input_value}'
+def register_geo_callback(app):
+    @app.callback(
+        Output('analytics-output', 'children'),
+        Input('analytics-input', 'value')
+    )
+    def update_city_selected(input_value):
+        return f'You selected: {input_value}'

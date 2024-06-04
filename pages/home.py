@@ -2,9 +2,10 @@ import dash
 from dash import html
 import dash_bootstrap_components as dbc
 
-dash.register_page(__name__, path='/')
+# dash.register_page(__name__, path='/')
 
 layout = html.Div([
+    html.Img(src='/assets/terrorism.jpg', style={'width': '100%', 'height': 'auto'}),
     html.Br(),
     dbc.Card(
         dbc.CardBody(
