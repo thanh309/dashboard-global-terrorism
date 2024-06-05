@@ -1,8 +1,5 @@
-*.csv
-*.xlsx
-*.pkl
 practice/
-assets/
+# assets/
 practice.py
 pages/__pycache__/
 draft.py

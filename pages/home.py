@@ -19,7 +19,8 @@ top_5_groups = top_5_groups.sort_values(by='civ_killed', ascending=True)
 unknownweapon_filtered_df = df[df['weapon_type'] != 'Unknown']
 top_5_weapons = unknownweapon_filtered_df['weapon_type'].value_counts().head(5).sort_values(ascending=True)
 
-
+top_group_icons = ['liber_tiger.png', 'shining_path.png', 'boko_haram.png', 'taliban.png', 'isil.png']
+top_group_icons = ['assets/top_group_icons/'+image_path for image_path in top_group_icons]
 fig_top_groups = px.bar(top_5_groups, 
              x='civ_killed', 
              y='te_group',
@@ -27,7 +28,6 @@ fig_top_groups = px.bar(top_5_groups,
              labels={'te_group':'Terrorist Group', 'civ_killed':'Civilians Killed'},
              orientation='h',
             )
-
 fig_top_groups.update_yaxes(visible=True, showticklabels=False)
 fig_top_groups.update_layout(
     # margin=dict(l=0, r=0, t=0, b=0),
@@ -41,16 +41,19 @@ fig_top_groups.update_traces(
     marker_color='#FF0000'
 )
 c=-1
-for x,y, png in zip(fig_top_groups.data[0].x, fig_top_groups.data[0].y, ['assets/icons8-folder-50.png']*5):
+for x,y, png in zip(fig_top_groups.data[0].x, fig_top_groups.data[0].y, top_group_icons):
     c+=1
+    fixed_size = (50, 50)  # Adjust these values as needed
+    img = Image.open(png)
+    img = img.resize(fixed_size, Image.BICUBIC)
     fig_top_groups.add_layout_image(
         x=x,
         y=y,
-        source=Image.open(png),
+        source=img,
         xref="x",
         yref="y",
-        sizex=10000,
-        sizey=10000,
+        sizex=3000,
+        sizey=3000,
         xanchor="center",
         yanchor="middle",  
     )
