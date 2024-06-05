@@ -44,24 +44,24 @@ df_pivot = merged_df.pivot(index=year_column, columns=country_column, values=['t
 
 # Create the Plotly figures
 fig_attacks = px.area(df_pivot['total_attacks'], 
-                      x=df_pivot.index, 
-                      y=df_pivot['total_attacks'].columns, 
-                      title='Number of Terrorist Attacks per Year by Region')
+                        x=df_pivot.index, 
+                        y=df_pivot['total_attacks'].columns, 
+                        title='Number of Terrorist Attacks per Year by Region')
 
 fig_fatalities = px.area(df_pivot['total_killed'], 
-                         x=df_pivot.index, 
-                         y=df_pivot['total_killed'].columns, 
-                         title='Number of Fatalities per Year by Region')
+                        x=df_pivot.index, 
+                        y=df_pivot['total_killed'].columns, 
+                        title='Number of Fatalities per Year by Region')
 
 fig_injuries = px.area(df_pivot['total_wounded'], 
-                       x=df_pivot.index, 
-                       y=df_pivot['total_wounded'].columns, 
-                       title='Number of Injuries per Year by Region')
+                        x=df_pivot.index, 
+                        y=df_pivot['total_wounded'].columns, 
+                        title='Number of Injuries per Year by Region')
 
 fig_damage = px.area(df_pivot['prorperty_damage'], 
-                     x=df_pivot.index, 
-                     y=df_pivot['prorperty_damage'].columns, 
-                     title='Property Damage in USD per Year by Region')
+                    x=df_pivot.index, 
+                    y=df_pivot['prorperty_damage'].columns, 
+                    title='Property Damage in USD per Year by Region')
 
 # Set showlegend=False for fig_fatalities, fig_injuries, and fig_damage
 fig_attacks.update_traces(showlegend=False)
@@ -75,13 +75,16 @@ regions = df[country_column].unique()
 
 # Layout of the Dash app
 layout = html.Div([
-    html.H1('Successful Attack', style={'font-size':'30px', 'text-align':'center', 'font-weight':'bold'}),
+    html.Label('Select Status:', style={'font-size':'30px', 'font-weight':'bold', 'color': 'crimson'}), 
     dcc.RadioItems(
         id='success-radioitems',
         options=[{'label': '(All)', 'value': '(All)'}, 
-                 {'label': 'Successful', 'value': 'Successful'}, 
-                 {'label': 'Unsuccessful', 'value': 'Unsuccessful'}],
-        value='(All)'
+                {'label': 'Successful', 'value': 'Successful'}, 
+                {'label': 'Unsuccessful', 'value': 'Unsuccessful'}],
+        value='(All)',
+        labelStyle={'display': 'inline-block', 'margin-right': '10px'},
+        inputClassName='radio-items-input',  # Apply the CSS class to hide the default radio button
+        labelClassName='radio-items-label'   # Apply the CSS class to style the labels
     ),
     dcc.Checklist(
         id='region-checklist',
