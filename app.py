@@ -24,7 +24,7 @@ app.layout = html.Div([
     ], style={'display':'flex', 'justifyContent':'center', 'flexWrap':'wrap'}),
     dash.page_container
 ], style={
-    'background-image':'url("assets/background.png")',
+    'background-image':'url("assets/main_background.jpg")',
     'background-size':'cover',
     'background-repeat':'no-repeat',
     'background-position':'center',
