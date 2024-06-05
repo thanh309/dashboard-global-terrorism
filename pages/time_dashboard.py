@@ -145,22 +145,26 @@ def update_graphs(selected_regions, selected_status):
     fig_attacks = px.area(filtered_attacks,
                         x=filtered_attacks.index,
                         y=filtered_attacks.columns,
-                        title='Number of Terrorist Attacks per Year by Region')
+                        title='Number of Terrorist Attacks per Year by Region',
+                        color_discrete_sequence=px.colors.sequential.Brwnyl,)
 
     fig_fatalities = px.area(filtered_fatalities,
                             x=filtered_fatalities.index,
                             y=filtered_fatalities.columns,
-                            title='Number of Fatalities per Year by Region')
+                            title='Number of Fatalities per Year by Region',
+                            color_discrete_sequence=px.colors.sequential.YlOrBr)
 
     fig_injuries = px.area(filtered_injuries,
                             x=filtered_injuries.index,
                             y=filtered_injuries.columns,
-                            title='Number of Injuries per Year by Region')
+                            title='Number of Injuries per Year by Region',
+                            color_discrete_sequence=px.colors.sequential.OrRd)
 
     fig_damage = px.area(filtered_damage,
                         x=filtered_damage.index,
                         y=filtered_damage.columns,
-                        title='Property Damage in USD per Year by Region')
+                        title='Property Damage in USD per Year by Region',
+                        color_discrete_sequence=px.colors.sequential.Oryel)
 
     fig_attacks.update_traces(showlegend=False)
     fig_fatalities.update_traces(showlegend=False)
