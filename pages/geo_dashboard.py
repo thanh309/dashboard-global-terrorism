@@ -7,8 +7,8 @@ import numpy as np
 dash.register_page(__name__)
 
 data: pd.DataFrame = pd.read_pickle('assets/cleaned_data.pkl')
-kill_data = data[['year', 'country_code', 'country_txt', 'total_casualities']]
-kill_data = kill_data.groupby(['year', 'country_code', 'country_txt'])['total_casualities'].sum().reset_index()
+kill_data = data[['year', 'country_code', 'country_txt', 'total_casualties']]
+kill_data = kill_data.groupby(['year', 'country_code', 'country_txt'])['total_casualties'].sum().reset_index()
 kill_data = kill_data.rename(columns={'country_txt': 'Country'})
 
 all_countries = kill_data['country_code'].unique()
@@ -18,7 +18,7 @@ all_years = all_years = np.arange(1970, 2021)
 all_combinations = pd.MultiIndex.from_product([all_years, all_countries], names=['year', 'country_code']).to_frame(index=False)
 complete_data = pd.merge(all_combinations, kill_data, on=['year', 'country_code'], how='left')
 
-complete_data['total_casualities'] = complete_data['total_casualities'].fillna(0)
+complete_data['total_casualties'] = complete_data['total_casualties'].fillna(0)
 
 country_names = kill_data[['country_code', 'Country']].drop_duplicates()
 complete_data = pd.merge(complete_data, country_names, on='country_code', how='left')
@@ -30,21 +30,21 @@ complete_data.rename(columns={'Country_y': 'Country'}, inplace=True)
 
 log_bin_edges = [0, 3, 10, 30, 100, 300, 1000, 3000, 10000, 30000000]
 log_bin_labels = ['0-3', '3-10', '10-30', '30-100', '100-300', '300-1000', '1000-3000', '3000-10000', '>10000']
-complete_data['total_casualities_cat'] = pd.cut(complete_data['total_casualities'], bins=log_bin_edges, labels=log_bin_labels, include_lowest=True)
+complete_data['total_casualties_cat'] = pd.cut(complete_data['total_casualties'], bins=log_bin_edges, labels=log_bin_labels, include_lowest=True)
 
-complete_data.sort_values(['year', 'total_casualities'], inplace=True)
+complete_data.sort_values(['year', 'total_casualties'], inplace=True)
 complete_data.reset_index(drop=True, inplace=True)
 
 
 fig = px.choropleth(complete_data,
                     locations='country_code',
-                    color='total_casualities',
-                    hover_data={'Country': True, 'total_casualities': True, 'country_code': False, 'year': False, 'total_casualities_cat': False},
-                    range_color=(0, np.max(complete_data['total_casualities'])),
+                    color='total_casualties',
+                    hover_data={'Country': True, 'total_casualties': True, 'country_code': False, 'year': False, 'total_casualties_cat': False},
+                    range_color=(0, np.max(complete_data['total_casualties'])),
                     animation_frame='year',
                     color_continuous_scale='hot',
                     color_discrete_sequence=['#0d0887', '#46039f', '#7201a8', '#9c179e', '#bd3786', '#d8576b', '#ed7953', '#fb9f3a', '#fdca26', '#f0f921'],
-                    labels={'total_casualities':'Total number of casualities'},
+                    labels={'total_casualties':'Total number of casualties'},
                     template='plotly_dark'
 )
 
@@ -87,5 +87,5 @@ fig.layout.updatemenus[0].buttons[0].args[1]['transition']['duration'] = 30
 
 layout = html.Div([
     html.H1('Geographical Dashboard'),
-    dcc.Graph(id='total_casualities_map', figure=fig)
+    dcc.Graph(id='total_casualties_map', figure=fig)
 ])
