@@ -99,7 +99,33 @@ for x,y, png in zip(fig_top_weapons.data[0].x, fig_top_weapons.data[0].y, top_we
         yanchor="middle",  
     )
 
+# tree map
+success_attack = df[df['success'] == 1].groupby('region_txt')['success'].count()
+suc_att_df = pd.DataFrame({'region_txt': success_attack.index, 'success': 'success', 'total': success_attack.values})
 
+failure_attack = df[df['success'] == 0].groupby('region_txt')['success'].count()
+fal_att_df = pd.DataFrame({'region_txt': failure_attack.index, 'success': 'failure', 'total': failure_attack.values})
+
+tot_att_df =pd.concat([suc_att_df, fal_att_df])
+
+fig_success_by_region = px.treemap(
+    data_frame=tot_att_df,
+    path=["region_txt",'success'],  # Correct column names for hierarchy
+    values="total",
+    color='success',
+    color_discrete_sequence=["rgb(201, 62, 95)", "rgb(164, 235, 225)",  "rgb(235, 245, 239)"],
+    title="Treemap: Total Attacks by Region"  # Update title if needed
+)
+fig_success_by_region.update_traces(root_color="lightgrey")
+fig_success_by_region.update_layout(
+    margin=dict(l=10, r=10, t=50, b=10),
+)
+fig_success_by_region.update_layout(
+    paper_bgcolor='rgba(0,0,0,0)',
+    plot_bgcolor='rgba(0,0,0,0)',
+    font=dict(family='Arial',size=18, color='gray')
+)
+fig_success_by_region.update_layout(height=300, width=400) 
 
 
 layout = html.Div([
@@ -118,6 +144,12 @@ layout = html.Div([
     ),
     html.Div(
         [
+            dcc.Graph(figure=fig_success_by_region)
+        ],
+        style={'display': 'grid', 'gridTemplateColumns': '0.5r', 'gap': '10px', 'margin-left': '70px'}
+    ),
+    html.Div(
+        [
             dcc.Graph(figure=fig_top_groups),
             dcc.Graph(figure=fig_top_weapons),
             # dcc.Graph(figure=fig),
@@ -126,5 +158,3 @@ layout = html.Div([
         style={'display': 'grid', 'gridTemplateColumns': '1fr 1fr', 'gap': '1px'}
     )
 ])
-
-
