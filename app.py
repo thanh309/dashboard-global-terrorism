@@ -27,7 +27,8 @@ app.layout = html.Div([
     'background-image':'url("assets/main_background.jpg")',
     'background-size':'stretch',
     'background-repeat':'no-repeat',
-    'background-position':'center'
+    'background-position':'center',
+    'height': '100vh'  # Ensure the background covers the full height of the viewport
 })
 
 if __name__ == '__main__':
