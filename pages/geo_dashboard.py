@@ -24,6 +24,13 @@ complete_data.rename(columns={'Country_y': 'Country'}, inplace=True)
 complete_data.sort_values(['year', 'total_casualties'], inplace=True)
 complete_data.reset_index(drop=True, inplace=True)
 
+all_kill_data = complete_data.groupby(['country_code', 'Country'])['total_casualties'].sum().reset_index()
+log_bin_edges = [0, 30, 100, 300, 1000, 3000, 10000, 30000, 100000, 300000000]
+log_bin_labels = ['0-30', '30-100', '100-300', '300-1000', '1000-3000', '3000-10000', '10000-30000', '30000-100000', '>100000']
+all_kill_data['total_casualties_cat'] = pd.cut(all_kill_data['total_casualties'], bins=log_bin_edges, labels=log_bin_labels, include_lowest=True)
+all_kill_data.sort_values(['total_casualties'], inplace=True)
+all_kill_data.reset_index(drop=True, inplace=True)
+all_kill_data = all_kill_data.rename(columns={'country_txt': 'Country'})
 
 fig1 = px.choropleth(complete_data,
                     locations='country_code',
@@ -51,30 +58,27 @@ fig1.update_layout(
         y=0.9,
     )
 )
-fig1.update_traces(marker_line_width=0)
+fig1.update_traces(
+    marker_line_width=0,
+    # hovertemplate='%{customdata[0]}<br>Total number of casualties: %{z}<extra></extra>'
+)
 fig1.layout.updatemenus[0].buttons[0].args[1]['frame']['duration'] = 120
 fig1.layout.updatemenus[0].buttons[0].args[1]['transition']['duration'] = 30
 
 
-all_kill_data = complete_data.groupby(['country_code', 'Country'])['total_casualties'].sum().reset_index()
-log_bin_edges = [0, 30, 100, 300, 1000, 3000, 10000, 30000, 100000, 300000000]
-log_bin_labels = ['0-30', '30-100', '100-300', '300-1000', '1000-3000', '3000-10000', '10000-30000', '30000-100000', '>100000']
-all_kill_data['total_casualties_cat'] = pd.cut(all_kill_data['total_casualties'], bins=log_bin_edges, labels=log_bin_labels, include_lowest=True)
-all_kill_data.sort_values(['total_casualties'], inplace=True)
-all_kill_data.reset_index(drop=True, inplace=True)
 
 
-fig2 = px.choropleth(all_kill_data,
+fig2 = px.choropleth(all_kill_data[['country_code', 'total_casualties_cat', 'Country']],
                     locations='country_code',
+                    hover_data={'Country': True, 'country_code': False, 'total_casualties_cat': True},
                     color='total_casualties_cat',
-                    hover_data={'Country': True, 'country_code': False},
                     color_discrete_sequence=['#0d0887', '#46039f', '#7201a8', '#9c179e', '#bd3786', '#d8576b', '#ed7953', '#fb9f3a', '#fdca26', '#f0f921'],
                     labels={'total_casualties_cat':'Total number of casualties'},
                     template='plotly_dark',
 )
 fig2.update_layout(
     plot_bgcolor='black',
-    margin={"r":0,"t":10,"l":0,"b":10},
+    margin={"r":10,"t":10,"l":10,"b":10},
 )
 fig2.update_layout(
     legend=dict(
@@ -84,8 +88,31 @@ fig2.update_layout(
         # x=0.9,
     )
 )
-fig2.update_traces(marker_line_width=0)
+fig2.update_traces(
+    marker_line_width=0,
+    hovertemplate='%{customdata[0]}<br>Total number of casualties: %{customdata[2]}<extra></extra>'
+)
 
+
+pd.options.mode.copy_on_write = True
+data_num_atk = data[['region_txt', 'country_txt', 'country_code']]
+data_num_atk.loc[data_num_atk['country_txt'] == 'Germany', 'region_txt'] = 'Western Europe' # damn
+data_num_atk.loc[data_num_atk['region_txt'] == 'Middle East & North Africa', 'region_txt'] = 'Middle East<br>& North Africa'
+data_num_atk.loc[data_num_atk['region_txt'] == 'Central America & Caribbean', 'region_txt'] = 'Central America<br>& Caribbean'
+data_num_atk = data_num_atk.groupby(['country_txt', 'region_txt']).size().reset_index(name='Number of attacks')
+
+fig3 = px.sunburst(data_num_atk,
+                   path=['region_txt', 'country_txt'], values='Number of attacks',
+                   color='Number of attacks',
+                   hover_data={'Number of attacks': True},
+                   color_continuous_scale='RdBu_r',
+                   title='Number of attacks per region',
+                   template='plotly_dark'
+                  )
+
+fig3.update_traces(
+    hovertemplate='%{label}<br>Number of attacks: %{value}<extra></extra>'
+)
 
 @callback(
     Output(component_id="selected-figure", component_property="figure"),
@@ -98,14 +125,21 @@ def update_figure(selected_value):
         return fig2
 
 
+
+
 layout = html.Div(children=[
-    dcc.Dropdown(
-        id="figure-dropdown",
-        options=[
-            {"label": "Figure 1", "value": "fig1"},
-            {"label": "Figure 2", "value": "fig2"},
-        ],
-        value="fig1",
-    ),
-    dcc.Graph(id="selected-figure")
-])
+    html.Div(children=[
+        dcc.Dropdown(
+            id="figure-dropdown",
+            options=[
+                {"label": "Global casualty trends by year", "value": "fig1"},
+                {"label": "Total number of casualties", "value": "fig2"},
+            ],
+            value="fig1",
+        ),
+        dcc.Graph(id="selected-figure")
+    ]),
+    html.Div(children=[
+        dcc.Graph(id='fig3', figure=fig3)
+    ])
+],  style={'display': 'grid', 'gridTemplateColumns': '1fr 1fr'})
