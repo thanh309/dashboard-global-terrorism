@@ -8,13 +8,8 @@ dash.register_page(__name__)
 # Load the data
 df = pd.read_pickle('assets/cleaned_data.pkl')
 
-# Check and print column names
-# print(df.columns)
-# print(df.dtypes)
-
 # Replace all -99 in 'prorperty_damage' column with 0
 df['prorperty_damage'] = df['prorperty_damage'].apply(lambda x: max(x, 0))
-# print(df['prorperty_damage'])
 
 # Replace 'iyear' and 'country' with the actual column names
 year_column = 'year'  # Adjust this if the actual column name is different
@@ -32,20 +27,20 @@ all_years = pd.DataFrame({year_column: range(df[year_column].min(), df[year_colu
 
 # Merge with the grouped data to include all years for each country
 df_merged_attacks = df_grouped_attacks.merge(all_years, on=year_column, how='right').fillna({country_column: 'Unknown', 'total_attacks': 0})
-# print(df_merged_attacks)
 df_merged = df_grouped.merge(all_years, on=year_column, how='right').fillna({country_column: 'Unknown', 
                                                                             'total_killed': 0, 
                                                                             'total_wounded': 0,
                                                                             'prorperty_damage': 0})
-# print(df_merged)
 merged_df = pd.merge(df_merged_attacks, df_merged, on=[year_column, country_column], how='outer')
-# print(merged_df)
+
+# Filter out the "Unknown" region
+merged_df = merged_df[merged_df[country_column] != 'Unknown']
+
 # Pivot the table to get years as rows and countries as columns
 df_pivot = merged_df.pivot(index=year_column, columns=country_column, values=['total_attacks', 
                                                                               'total_killed', 
-                                                                             'total_wounded', 
-                                                                             'prorperty_damage']).fillna(0)
-# print(df_pivot)
+                                                                              'total_wounded', 
+                                                                              'prorperty_damage']).fillna(0)
 
 # Create the Plotly figures
 fig_attacks = px.area(df_pivot['total_attacks'], 
@@ -69,14 +64,23 @@ fig_damage = px.area(df_pivot['prorperty_damage'],
                      title='Property Damage in USD per Year by Region')
 
 # Set showlegend=False for fig_fatalities, fig_injuries, and fig_damage
+fig_attacks.update_traces(showlegend=False)
 fig_fatalities.update_traces(showlegend=False)
 fig_injuries.update_traces(showlegend=False)
 fig_damage.update_traces(showlegend=False)
 
+# Get the unique regions excluding 'Unknown'
+regions = df[country_column].unique()
+# regions = [region for region in regions if region != 'Unknown']
 
 # Layout of the Dash app
 layout = html.Div([
-    # html.H1('Time Dashboard'),
+    dcc.Checklist(
+        id='region-checklist',
+        options=[{'label': region, 'value': region} for region in regions],
+        value=regions,
+        labelStyle={'display': 'inline-block', 'margin-right': '10px'}
+    ),
     
     html.Div([
         dcc.Graph(id='graph-attacks', figure=fig_attacks),
@@ -87,39 +91,42 @@ layout = html.Div([
         style={'display': 'grid', 'gridTemplateColumns': '1fr 1fr', 'gap': '10px'}),
     ])
 
-# @callback(
-#     Output('graph-fatalities', 'figure'),
-#     Output('graph-injuries', 'figure'),
-#     Output('graph-damage', 'figure'),
-#     Input('graph-attacks', 'clickData')  # Use the appropriate input (e.g., 'clickData', 'selectedData', etc.)
-# )
-# def update_graphs(clickData):
-    # if selectedData:
-    #     print(selectedData['points'][0]['customdata'])
-        # region = clickData['points'][0]['curveNumber']
-    #     filtered_data = df_grouped[df_grouped[country_column] == region]
-        
-    #     fig_fatalities = px.area(filtered_data, 
-    #                              x=year_column, 
-    #                              y='total_killed', 
-    #                              title=f'Number of Fatalities per Year in {region}')
-        
-    #     fig_injuries = px.area(filtered_data, 
-    #                            x=year_column, 
-    #                            y='total_wounded', 
-    #                            title=f'Number of Injuries per Year in {region}')
-        
-    #     fig_damage = px.area(filtered_data, 
-    #                          x=year_column, 
-    #                          y='prorperty_damage', 
-    #                          title=f'propvalue per Year in {region}')
-        
-    #     return fig_fatalities, fig_injuries, fig_damage
+@callback(
+    Output('graph-attacks', 'figure'),
+    Output('graph-fatalities', 'figure'),
+    Output('graph-injuries', 'figure'),
+    Output('graph-damage', 'figure'),
+    Input('region-checklist', 'value')
+)
+def update_graphs(selected_regions):
+    filtered_attacks = df_pivot['total_attacks'][selected_regions]
+    filtered_fatalities = df_pivot['total_killed'][selected_regions]
+    filtered_injuries = df_pivot['total_wounded'][selected_regions]
+    filtered_damage = df_pivot['prorperty_damage'][selected_regions]
     
-    # return fig_fatalities, fig_injuries, fig_damage
+    fig_attacks = px.area(filtered_attacks, 
+                          x=filtered_attacks.index, 
+                          y=filtered_attacks.columns, 
+                          title='Number of Terrorist Attacks per Year by Region')
+    
+    fig_fatalities = px.area(filtered_fatalities, 
+                             x=filtered_fatalities.index, 
+                             y=filtered_fatalities.columns, 
+                             title='Number of Fatalities per Year by Region')
 
+    fig_injuries = px.area(filtered_injuries, 
+                           x=filtered_injuries.index, 
+                           y=filtered_injuries.columns, 
+                           title='Number of Injuries per Year by Region')
 
-# if __name__ == '__main__':
-#     app = Dash(__name__)
-#     app.layout = layout
-#     app.run_server(debug=True)
+    fig_damage = px.area(filtered_damage, 
+                         x=filtered_damage.index, 
+                         y=filtered_damage.columns, 
+                         title='Property Damage in USD per Year by Region')
+    
+    fig_attacks.update_traces(showlegend=False)
+    fig_fatalities.update_traces(showlegend=False)
+    fig_injuries.update_traces(showlegend=False)
+    fig_damage.update_traces(showlegend=False)
+    
+    return fig_attacks, fig_fatalities, fig_injuries, fig_damage
