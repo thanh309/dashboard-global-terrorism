@@ -68,61 +68,56 @@ fig_damage = px.area(df_pivot['prorperty_damage'],
                      y=df_pivot['prorperty_damage'].columns, 
                      title='Property Damage in USD per Year by Region')
 
+# Set showlegend=False for fig_fatalities, fig_injuries, and fig_damage
+fig_fatalities.update_traces(showlegend=False)
+fig_injuries.update_traces(showlegend=False)
+fig_damage.update_traces(showlegend=False)
+
+
 # Layout of the Dash app
 layout = html.Div([
-    html.H1('Time Dashboard'),
+    # html.H1('Time Dashboard'),
     
     html.Div([
-        html.Div([
-            dcc.Graph(id='graph-attacks', figure=fig_attacks)
-        ], className='six columns'),
-        
-        html.Div([
-            dcc.Graph(id='graph-fatalities', figure=fig_fatalities)
-        ], className='six columns'),
-    ], className='row'),
-    
-    html.Div([
-        html.Div([
-            dcc.Graph(id='graph-injuries', figure=fig_injuries)
-        ], className='six columns'),
-        
-        html.Div([
-            dcc.Graph(id='graph-damage', figure=fig_damage)
-        ], className='six columns'),
-    ], className='row'),
-])
+        dcc.Graph(id='graph-attacks', figure=fig_attacks),
+        dcc.Graph(id='graph-fatalities', figure=fig_fatalities),
+        dcc.Graph(id='graph-injuries', figure=fig_injuries),
+        dcc.Graph(id='graph-damage', figure=fig_damage),
+        ],
+        style={'display': 'grid', 'gridTemplateColumns': '1fr 1fr', 'gap': '10px'}),
+    ])
 
-@callback(
-    [Output('graph-fatalities', 'figure'),
-     Output('graph-injuries', 'figure'),
-     Output('graph-damage', 'figure')],
-    Input('graph-attacks', 'clickData')
-)
-
-def update_graphs(clickData):
-    if clickData:
-        region = clickData['points'][0]['curveNumber']
-        filtered_data = df_grouped[df_grouped[country_column] == region]
+# @callback(
+#     Output('graph-fatalities', 'figure'),
+#     Output('graph-injuries', 'figure'),
+#     Output('graph-damage', 'figure'),
+#     Input('graph-attacks', 'clickData')  # Use the appropriate input (e.g., 'clickData', 'selectedData', etc.)
+# )
+# def update_graphs(clickData):
+    # if selectedData:
+    #     print(selectedData['points'][0]['customdata'])
+        # region = clickData['points'][0]['curveNumber']
+    #     filtered_data = df_grouped[df_grouped[country_column] == region]
         
-        fig_fatalities = px.area(filtered_data, 
-                                 x=year_column, 
-                                 y='total_killed', 
-                                 title=f'Number of Fatalities per Year in {region}')
+    #     fig_fatalities = px.area(filtered_data, 
+    #                              x=year_column, 
+    #                              y='total_killed', 
+    #                              title=f'Number of Fatalities per Year in {region}')
         
-        fig_injuries = px.area(filtered_data, 
-                               x=year_column, 
-                               y='total_wounded', 
-                               title=f'Number of Injuries per Year in {region}')
+    #     fig_injuries = px.area(filtered_data, 
+    #                            x=year_column, 
+    #                            y='total_wounded', 
+    #                            title=f'Number of Injuries per Year in {region}')
         
-        fig_damage = px.area(filtered_data, 
-                             x=year_column, 
-                             y='prorperty_damage', 
-                             title=f'propvalue per Year in {region}')
+    #     fig_damage = px.area(filtered_data, 
+    #                          x=year_column, 
+    #                          y='prorperty_damage', 
+    #                          title=f'propvalue per Year in {region}')
         
-        return fig_fatalities, fig_injuries, fig_damage
+    #     return fig_fatalities, fig_injuries, fig_damage
     
-    return fig_fatalities, fig_injuries, fig_damage
+    # return fig_fatalities, fig_injuries, fig_damage
+
 
 # if __name__ == '__main__':
 #     app = Dash(__name__)
