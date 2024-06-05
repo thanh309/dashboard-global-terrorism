@@ -4,6 +4,7 @@ from dash import dash_table
 import plotly.express as px
 import pandas as pd
 from PIL import Image
+import pandas as pd
 
 dash.register_page(__name__, path='/')
 
@@ -73,6 +74,7 @@ fig_top_weapons.update_layout(
 fig_top_weapons.update_traces(
     marker_color='#FF0000'
 )
+
 
 
 layout = html.Div([
