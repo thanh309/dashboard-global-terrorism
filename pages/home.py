@@ -21,6 +21,10 @@ top_5_weapons = unknownweapon_filtered_df['weapon_type'].value_counts().head(5).
 
 top_group_icons = ['liber_tiger.png', 'shining_path.png', 'boko_haram.png', 'taliban.png', 'isil.png']
 top_group_icons = ['assets/top_group_icons/'+image_path for image_path in top_group_icons]
+
+top_weapon_icons = ['chemistry.png', 'melee.png', 'incendiary.png', 'gun.png', 'explosive.png']
+top_weapon_icons = ['assets/top_weapon_icons/'+image_path for image_path in top_weapon_icons]
+
 fig_top_groups = px.bar(top_5_groups, 
              x='civ_killed', 
              y='te_group',
@@ -77,6 +81,24 @@ fig_top_weapons.update_layout(
 fig_top_weapons.update_traces(
     marker_color='#FF0000'
 )
+c=-1
+for x,y, png in zip(fig_top_weapons.data[0].x, fig_top_weapons.data[0].y, top_weapon_icons):
+    c+=1
+    fixed_size = (50, 50)  # Adjust these values as needed
+    img = Image.open(png)
+    img = img.resize(fixed_size, Image.BICUBIC)
+    fig_top_weapons.add_layout_image(
+        x=x,
+        y=y,
+        source=img,
+        xref="x",
+        yref="y",
+        sizex=10000,
+        sizey=10000,
+        xanchor="center",
+        yanchor="middle",  
+    )
+
 
 
 

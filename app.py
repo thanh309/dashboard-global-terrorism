@@ -8,7 +8,7 @@ import pandas as pd
 df = pd.read_pickle('assets/cleaned_data.pkl')
 
 # Initialize the Dash app
-app = Dash(__name__, external_stylesheets=[dbc.themes.VAPOR, 'assets/gtd.css'], use_pages=True)
+app = Dash(__name__, external_stylesheets=[dbc.themes.COSMO, 'assets/gtd.css'], use_pages=True)
 app.title = "Global Terrorism Dashboard"
 app.layout = html.Div([
     html.H1(
