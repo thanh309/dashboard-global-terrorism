@@ -8,7 +8,7 @@ import pandas as pd
 df = pd.read_pickle('assets/cleaned_data.pkl')
 
 # Initialize the Dash app
-app = Dash(__name__, external_stylesheets=[dbc.themes.VAPOR, 'assets/gtd.css'], use_pages=True)
+app = Dash(__name__, external_stylesheets=[dbc.themes.COSMO, 'assets/gtd.css'], use_pages=True)
 app.title = "Global Terrorism Dashboard"
 app.layout = html.Div([
     html.H1(
@@ -27,7 +27,8 @@ app.layout = html.Div([
     'background-image':'url("assets/background.png")',
     'background-size':'cover',
     'background-repeat':'no-repeat',
-    'background-position':'center'
+    'background-position':'center',
+    'height': '100vh'  # Ensure the background covers the full height of the viewport
 })
 
 if __name__ == '__main__':
