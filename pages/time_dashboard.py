@@ -69,6 +69,14 @@ fig_fatalities.update_traces(showlegend=False)
 fig_injuries.update_traces(showlegend=False)
 fig_damage.update_traces(showlegend=False)
 
+for fig in [fig_attacks, fig_fatalities, fig_injuries, fig_damage]:
+    fig.update_layout(
+        # margin=dict(l=0, r=0, t=0, b=0),
+        xaxis=dict(showline=True, linecolor='white'),
+        yaxis=dict(showline=True, linecolor='white'),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
+    )
 # Get the unique regions excluding 'Unknown'
 regions = df[country_column].unique()
 # regions = [region for region in regions if region != 'Unknown']
@@ -98,8 +106,9 @@ layout = html.Div([
         dcc.Graph(id='graph-injuries', figure=fig_injuries),
         dcc.Graph(id='graph-damage', figure=fig_damage),
         ],
-        style={'display': 'grid', 'gridTemplateColumns': '1fr 1fr', 'gap': '10px'}),
-    ])
+        style={'display': 'grid', 'gridTemplateColumns': '1fr 1fr', 'gap': '10px', 'backgroundColor': 'rgba(0,0,0,0)'}),
+    ],
+    className='content')
 
 @callback(
     Output('graph-attacks', 'figure'),
@@ -167,4 +176,13 @@ def update_graphs(selected_regions, selected_status):
     fig_injuries.update_traces(showlegend=False)
     fig_damage.update_traces(showlegend=False)
     
+    for fig in [fig_attacks, fig_fatalities, fig_injuries, fig_damage]:
+        fig.update_layout(
+            # margin=dict(l=0, r=0, t=0, b=0),
+            xaxis=dict(showline=True, linecolor='white'),
+            yaxis=dict(showline=True, linecolor='white'),
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)'
+        )
+
     return fig_attacks, fig_fatalities, fig_injuries, fig_damage

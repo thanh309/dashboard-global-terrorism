@@ -24,11 +24,16 @@ app.layout = html.Div([
     ], style={'display':'flex', 'justifyContent':'center', 'flexWrap':'wrap'}),
     dash.page_container
 ], style={
-    'background-image':'url("assets/main_background.jpg")',
+    'background-image':'url("assets/dark_bg3.PNG")',
     'background-size':'cover',
     'background-repeat':'no-repeat',
     'background-position':'center',
-    'height': '100vh'  # Ensure the background covers the full height of the viewport
+    # 'background-attachment': 'fixed',
+    'height': '100vh', # Ensure the background covers the full height of the viewport
+    'position': 'fixed',
+    'top': 0,
+    'left': 0,
+    'z-index': -1
 })
 
 if __name__ == '__main__':

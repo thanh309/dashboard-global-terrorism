@@ -42,3 +42,9 @@
 .radio-items-label:hover {
     background-color: crimson; 
 }
+
+.content {
+    position: relative;
+    overflow: auto; /* Enable scrolling for content */
+    height: 100vh; /* Make the content take full viewport height */
+}
