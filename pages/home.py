@@ -43,14 +43,17 @@ fig_top_groups.update_traces(
 c=-1
 for x,y, png in zip(fig_top_groups.data[0].x, fig_top_groups.data[0].y, top_group_icons):
     c+=1
+    fixed_size = (50, 50)  # Adjust these values as needed
+    img = Image.open(png)
+    img = img.resize(fixed_size, Image.BICUBIC)
     fig_top_groups.add_layout_image(
         x=x,
         y=y,
-        source=Image.open(png),
+        source=img,
         xref="x",
         yref="y",
-        sizex=5000,
-        sizey=5000,
+        sizex=3000,
+        sizey=3000,
         xanchor="center",
         yanchor="middle",  
     )
