@@ -125,18 +125,14 @@ fig_success_by_region.update_layout(
 )
 # fig_success_by_region.update_layout(height=600, width=800,
 fig_success_by_region.update_traces(root_color="black")
-fig_success_by_region.update_layout(paper_bgcolor='rgba(0,1,0,1)',)
+fig_success_by_region.update_layout(
+    title_y = 0.975,
+    paper_bgcolor='rgba(0,0,0,0)',
+    plot_bgcolor='rgba(0,0,0,0)',
+    font=dict(family='Arial',size=14, color='gray'),
+    margin=dict(l=0, r=0, t=0, b=0))
 fig_success_by_region.update_traces(hovertemplate='total=%{value}<extra></extra>')
-# fig_success_by_region.update_layout(
-#     title_text = "Target type's distribution", 
-#     title_x = 0.96,
-#     title_y = 0.22,
-#     paper_bgcolor='rgba(0,0,0,0)',
-#     plot_bgcolor='rgba(0,0,0,0)',
-#     font=dict(family='Arial',size=14, color='gray'),
-#     margin=dict(l=0, r=0, t=0, b=0))
-fig_success_by_region.update_traces(textfont_size=12,
-                  marker=dict(line=dict(color='#000000', width=2)))
+
 
 target_type = df.groupby('target_type')['target_type'].count()
 tar_type_df = pd.DataFrame({'target_type': target_type.index,
@@ -168,14 +164,20 @@ fig_target_type = px.pie(
 
 fig_target_type.update_layout(
     title_text = "Target type's distribution", 
-    title_x = 0.96,
-    title_y = 0.22,
+    title_x = 0.15,
+    title_y = 0.975,
     paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(0,0,0,0)',
     font=dict(family='Arial',size=14, color='gray'),
     margin=dict(l=0, r=0, t=0, b=0))
-fig_target_type.update_traces(textinfo='percent', textfont_size=12,
-                  marker=dict(line=dict(color='#000000', width=2)))
+fig_target_type.update_traces(textinfo='percent', textfont_size=12,marker=dict(line=dict(color='#000000', width=2)),
+    margin=dict(l=0, r=0, t=0, b=0),
+    legend={
+        "x":0.9,
+        "y":0.5,
+        "xref":"container",
+        "yref":"container"
+    })
 
 
 attack_type = df.groupby('attack_type')['attack_type'].count()
@@ -212,14 +214,22 @@ fig_attack_type = px.pie(
 
 fig_attack_type.update_layout(
     title_text = "Attack type's distribution", 
-    title_x = 0.96,
-    title_y = 0.22,
+    title_x = 0.15,
+    title_y = 0.975,
     paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(0,0,0,0)',
     font=dict(family='Arial',size=14, color='gray'),
     margin=dict(l=0, r=0, t=0, b=0))
-fig_attack_type.update_traces(textinfo='percent', textfont_size=12,
-                  marker=dict(line=dict(color='#000000', width=2)))
+fig_attack_type.update_traces(textinfo='percent', textfont_size=12, marker=dict(line=dict(color='#000000', width=2)),
+    margin=dict(l=0, r=0, t=0, b=0),
+    legend={
+        "x":0.9,
+        "y":0.5,
+        "xref":"container",
+        "yref":"container"
+    })
+
+            
 
 layout = html.Div([
     html.Div(
