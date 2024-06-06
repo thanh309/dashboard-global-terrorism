@@ -53,3 +53,8 @@
 .content > * {
     margin-bottom: 5px; /* Set the bottom margin to create a gap */
 }
+
+.page-button.active {
+    background-color: crimson;
+    /* color: white; */
+}

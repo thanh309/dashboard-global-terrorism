@@ -76,7 +76,7 @@ fig_damage = px.area(df_pivot['prorperty_damage'],
                     color_discrete_map=color_map)
 
 # Set showlegend=False for fig_fatalities, fig_injuries, and fig_damage
-fig_attacks.update_traces(showlegend=False)
+# fig_attacks.update_traces(showlegend=False)
 fig_fatalities.update_traces(showlegend=False)
 fig_injuries.update_traces(showlegend=False)
 fig_damage.update_traces(showlegend=False)
@@ -196,7 +196,7 @@ def update_graphs(selected_regions, selected_status):
                         title='Property Damage in USD per Year by Region',
                         color_discrete_map=color_map)
 
-    fig_attacks.update_traces(showlegend=False)
+    # fig_attacks.update_traces(showlegend=False)
     fig_fatalities.update_traces(showlegend=False)
     fig_injuries.update_traces(showlegend=False)
     fig_damage.update_traces(showlegend=False)
