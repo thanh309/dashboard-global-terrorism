@@ -19,16 +19,21 @@ app.layout = html.Div([
             dbc.Button(
                 children=f"{page['name']}", 
                 href=page["relative_path"],className='page-button',
-                style={'margin-right':'10px'}) # Padding between buttons
+                style={'margin-right':'10px', 'borderColor': 'white', 'borderRadius': '10px'}) # Padding between buttons
         ) for page in dash.page_registry.values()
-    ], style={'display':'flex', 'justifyContent':'center', 'flexWrap':'wrap'}),
+    ], style={'display':'flex', 'justifyContent':'center', 'flexWrap':'wrap', 'margin-bottom':'38px'}),
     dash.page_container
 ], style={
-    'background-image':'url("assets/background.png")',
+    'background-image':'url("assets/dark_bg3.PNG")',
     'background-size':'cover',
     'background-repeat':'no-repeat',
     'background-position':'center',
-    'height': '100vh'  # Ensure the background covers the full height of the viewport
+    'background-attachment': 'fixed',
+    'height': '200vh', # Ensure the background covers the full height of the viewport
+    # 'position': 'fixed',
+    'top': 0,
+    'left': 0,
+    'z-index': -1
 })
 
 if __name__ == '__main__':

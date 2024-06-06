@@ -2,9 +2,13 @@ import dash
 from dash import Dash, dcc, html, Input, Output, callback
 import plotly.express as px
 import pandas as pd
+import plotly.io as pio
 
 dash.register_page(__name__)
-
+colors = [
+    '#636efa', '#EF553B', '#00cc96', '#ab63fa', '#FFA15A',
+    '#19d3f3', '#FF6692', '#B6E880', '#FF97FF', '#FECB52', '#2ca02c', '#999999'
+]
 # Load the data
 df = pd.read_pickle('assets/cleaned_data.pkl')
 
@@ -46,60 +50,83 @@ df_pivot = merged_df.pivot(index=year_column, columns=country_column, values=['t
 fig_attacks = px.area(df_pivot['total_attacks'], 
                         x=df_pivot.index, 
                         y=df_pivot['total_attacks'].columns, 
-                        title='Number of Terrorist Attacks per Year by Region')
+                        title='Number of Terrorist Attacks per Year by Region',
+                        color_discrete_sequence=colors)
 
 fig_fatalities = px.area(df_pivot['total_killed'], 
                         x=df_pivot.index, 
-                        y=df_pivot['total_killed'].columns, 
-                        title='Number of Fatalities per Year by Region')
+                        y=df_pivot['total_killed'].columns,
+                        title='Number of Fatalities per Year by Region',
+                        color_discrete_sequence=colors)
 
 fig_injuries = px.area(df_pivot['total_wounded'], 
                         x=df_pivot.index, 
                         y=df_pivot['total_wounded'].columns, 
-                        title='Number of Injuries per Year by Region')
+                        title='Number of Injuries per Year by Region',
+                        color_discrete_sequence=colors)
 
 fig_damage = px.area(df_pivot['prorperty_damage'], 
                     x=df_pivot.index, 
                     y=df_pivot['prorperty_damage'].columns, 
-                    title='Property Damage in USD per Year by Region')
+                    title='Property Damage in USD per Year by Region',
+                    color_discrete_sequence=colors)
 
 # Set showlegend=False for fig_fatalities, fig_injuries, and fig_damage
-fig_attacks.update_traces(showlegend=False)
+# fig_attacks.update_traces(showlegend=False)
 fig_fatalities.update_traces(showlegend=False)
 fig_injuries.update_traces(showlegend=False)
 fig_damage.update_traces(showlegend=False)
 
+for fig in [fig_attacks, fig_fatalities, fig_injuries, fig_damage]:
+    fig.update_layout(
+        # margin=dict(l=0, r=0, t=0, b=0),
+        xaxis=dict(showline=True, linecolor='white', gridcolor='rgba(255, 255, 255, 0.3)'),
+        yaxis=dict(showline=True, linecolor='white', gridcolor='rgba(255, 255, 255, 0.3)'),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        font=dict(color='white'),  # Change color of text to white
+        title=dict(font=dict(color='white')),  # Change color of title to white
+        xaxis_title=dict(font=dict(color='white')),  # Change color of x-axis label to white
+        yaxis_title=dict(font=dict(color='white'))   # Change color of y-axis label to white
+    )
 # Get the unique regions excluding 'Unknown'
 regions = df[country_column].unique()
 # regions = [region for region in regions if region != 'Unknown']
 
 # Layout of the Dash app
 layout = html.Div([
-    html.Label('Select Status:', style={'font-size':'30px', 'font-weight':'bold', 'color': 'crimson'}), 
-    dcc.RadioItems(
-        id='success-radioitems',
-        options=[{'label': '(All)', 'value': '(All)'}, 
-                {'label': 'Successful', 'value': 'Successful'}, 
-                {'label': 'Unsuccessful', 'value': 'Unsuccessful'}],
-        value='(All)',
-        labelStyle={'display': 'inline-block', 'margin-right': '10px'},
-        inputClassName='radio-items-input',  # Apply the CSS class to hide the default radio button
-        labelClassName='radio-items-label'   # Apply the CSS class to style the labels
-    ),
-    dcc.Checklist(
-        id='region-checklist',
-        options=[{'label': region, 'value': region} for region in regions],
-        value=regions,
-        labelStyle={'display': 'inline-block', 'margin-right': '10px'}
-    ),
+    html.Div([
+        html.Div([html.Label('Select Status:', style={'font-size':'18px', 'color': 'white'}), 
+            dcc.RadioItems(
+                id='success-radioitems',
+                options=[{'label': '(All)', 'value': '(All)'}, 
+                        {'label': 'Successful', 'value': 'Successful'}, 
+                        {'label': 'Unsuccessful', 'value': 'Unsuccessful'}],
+                value='(All)',
+                labelStyle={'color':'white'},
+                # inputClassName='radio-items-input',  # Apply the CSS class to hide the default radio button
+                # labelClassName='radio-items-label'   # Apply the CSS class to style the labels
+                style={'display': 'grid', 'gridTemplateColumns': '1fr', 'gap': '10px'}
+        )], style={'border': '1px solid white', 'border-radius': '10px', 'padding': '10px', 'padding-left':'25px', 'margin-right':'10px', 'background-color':'rgba(0, 0, 0, 1)'}),
+        html.Div([
+            html.Label('Filter by:', style={'font-size':'18px', 'color': 'white'}), 
+            dcc.Checklist(
+                id='region-checklist',
+                options=[{'label': html.Span(regions[i], style={'background-color':colors[i]}), 'value': regions[i]} for i in range(len(regions))],
+                value=regions,
+                labelStyle={'display': 'inline-block', 'margin-right': '10px', 'color':'white'},
+                style={'display': 'grid', 'gridTemplateColumns': '1fr 1fr 1fr 1fr', 'gap': '10px'}
+        )], style={'border': '1px solid white', 'border-radius': '10px',  'padding': '10px','padding-left':'25px', 'background-color':'rgba(0, 0, 0, 1)'})],
+    style={'display': 'grid', 'gridTemplateColumns':'300px auto','margin-right': '10px'}),
     html.Div([
         dcc.Graph(id='graph-attacks', figure=fig_attacks),
         dcc.Graph(id='graph-fatalities', figure=fig_fatalities),
         dcc.Graph(id='graph-injuries', figure=fig_injuries),
         dcc.Graph(id='graph-damage', figure=fig_damage),
         ],
-        style={'display': 'grid', 'gridTemplateColumns': '1fr 1fr', 'gap': '10px'}),
-    ])
+        style={'display': 'grid', 'gridTemplateColumns': '1fr 1fr', 'gap': '10px', 'backgroundColor': 'rgba(0,0,0,0)'}),
+    ],
+    className='content')
 
 @callback(
     Output('graph-attacks', 'figure'),
@@ -146,33 +173,44 @@ def update_graphs(selected_regions, selected_status):
                         x=filtered_attacks.index,
                         y=filtered_attacks.columns,
                         title='Number of Terrorist Attacks per Year by Region',
-                        # color_discrete_sequence=px.colors.sequential.Brwnyl,
-                        )
+                        color_discrete_sequence=colors)
 
     fig_fatalities = px.area(filtered_fatalities,
                             x=filtered_fatalities.index,
                             y=filtered_fatalities.columns,
                             title='Number of Fatalities per Year by Region',
-                            # color_discrete_sequence=px.colors.sequential.YlOrBr
-                            )
+                            color_discrete_sequence=colors)
+
 
     fig_injuries = px.area(filtered_injuries,
                             x=filtered_injuries.index,
                             y=filtered_injuries.columns,
                             title='Number of Injuries per Year by Region',
-                            # color_discrete_sequence=px.colors.sequential.OrRd
-                            )
+                            color_discrete_sequence=colors)
+
 
     fig_damage = px.area(filtered_damage,
                         x=filtered_damage.index,
                         y=filtered_damage.columns,
                         title='Property Damage in USD per Year by Region',
-                        # color_discrete_sequence=px.colors.sequential.Oryel
-                        )
+                        color_discrete_sequence=colors)
 
-    fig_attacks.update_traces(showlegend=False)
+    # fig_attacks.update_traces(showlegend=False)
     fig_fatalities.update_traces(showlegend=False)
     fig_injuries.update_traces(showlegend=False)
     fig_damage.update_traces(showlegend=False)
     
+    for fig in [fig_attacks, fig_fatalities, fig_injuries, fig_damage]:
+        fig.update_layout(
+            # margin=dict(l=0, r=0, t=0, b=0),
+            xaxis=dict(showline=True, linecolor='white', gridcolor='rgba(255, 255, 255, 0.3)'),
+            yaxis=dict(showline=True, linecolor='white', gridcolor='rgba(255, 255, 255, 0.3)'),
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font=dict(color='white'),  # Change color of text to white
+            title=dict(font=dict(color='white')),  # Change color of title to white
+            xaxis_title=dict(font=dict(color='white')),  # Change color of x-axis label to white
+            yaxis_title=dict(font=dict(color='white'))   # Change color of y-axis label to white
+        )
+
     return fig_attacks, fig_fatalities, fig_injuries, fig_damage
