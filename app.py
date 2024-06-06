@@ -8,6 +8,7 @@ import pandas as pd
 # Initialize the Dash app
 app = Dash(__name__, external_stylesheets=[dbc.themes.COSMO, 'assets/gtd.css'], use_pages=True)
 app.title = "Global Terrorism Dashboard"
+server = app.server
 
 # Define the desired order of the pages
 page_order = ['Introduction', 'Home', 'Geo dashboard', 'Time dashboard']
