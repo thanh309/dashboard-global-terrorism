@@ -171,7 +171,7 @@ fig_target_type.update_layout(
         "xref":"container",
         "yref":"container"
     })
-fig_target_type.update_traces(textinfo='value', textfont_size=12,
+fig_target_type.update_traces(textinfo='percent', textfont_size=12,
                   marker=dict(line=dict(color='#000000', width=2)))
 
 
@@ -221,7 +221,7 @@ fig_attack_type.update_layout(
         "xref":"container",
         "yref":"container"
     })
-fig_attack_type.update_traces(textinfo='value', textfont_size=12,
+fig_attack_type.update_traces(textinfo='percent', textfont_size=12,
                   marker=dict(line=dict(color='#000000', width=2)))
 
 layout = html.Div([
