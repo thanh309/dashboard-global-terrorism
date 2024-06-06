@@ -13,10 +13,7 @@ kill_data = kill_data.rename(columns={'country_txt': 'Country'})
 
 all_countries = kill_data['country_code'].unique()
 all_years = all_years = np.arange(1970, 2021)
-all_combinations = pd.MultiIndex.from_product(
-    [all_years, all_countries],
-    names=['year', 'country_code']
-).to_frame(index=False)
+all_combinations = pd.MultiIndex.from_product([all_years, all_countries], names=['year', 'country_code']).to_frame(index=False)
 complete_data = pd.merge(all_combinations, kill_data, on=['year', 'country_code'], how='left')
 complete_data['total_casualties'] = complete_data['total_casualties'].fillna(0)
 country_names = kill_data[['country_code', 'Country']].drop_duplicates()
@@ -55,7 +52,6 @@ fig1.update_layout(
     ),
     paper_bgcolor='rgba(0,0,0,0)',
 )
-
 fig1.update_geos(
     showland=True, landcolor="black",
 )
@@ -94,13 +90,8 @@ fig2.update_layout(
     legend=dict(
         yanchor="top",
         y=0.9,
-        # xanchor="right",
-        # x=0.9,
     ),
-
     paper_bgcolor="rgba(0, 0, 0, 0)",
-    # "plot_bgcolor": "rgba(0, 0, 0, 0)",
-    
 )
 fig2.update_traces(
     marker_line_width=0,
