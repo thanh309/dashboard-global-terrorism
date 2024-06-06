@@ -62,7 +62,7 @@ fig1.update_layout(
     )
 )
 fig1.update_traces(
-    marker_line_width=0,
+    # marker_line_width=0,
     # hovertemplate='%{customdata[0]}<br>Total number of casualties: %{z}<extra></extra>'
 )
 fig1.layout.updatemenus[0].buttons[0].args[1]['frame']['duration'] = 120
