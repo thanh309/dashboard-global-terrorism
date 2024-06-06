@@ -61,6 +61,11 @@ fig1.update_layout(
         y=0.9,
     )
 )
+
+fig1.update_geos(
+    showland=True, landcolor="black",
+)
+
 fig1.update_traces(
     # marker_line_width=0,
     # hovertemplate='%{customdata[0]}<br>Total number of casualties: %{z}<extra></extra>'
