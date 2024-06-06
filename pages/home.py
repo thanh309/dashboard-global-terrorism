@@ -39,7 +39,7 @@ fig_top_groups.update_layout(
     yaxis=dict(showline=True, linecolor='white', linewidth=2),
     paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(0,0,0,0)',
-    font=dict(family='Arial',size=18, color='gray')
+    font=dict(family='Arial',size=14, color='gray')
 )
 fig_top_groups.update_traces(
     marker_color='#FF0000'
@@ -76,7 +76,7 @@ fig_top_weapons.update_layout(
     yaxis=dict(showline=True, linecolor='white', linewidth=2),
     paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(0,0,0,0)',
-    font=dict(family='Arial',size=18, color='gray')
+    font=dict(family='Arial',size=14, color='gray')
 )
 fig_top_weapons.update_traces(
     marker_color='#FF0000'
@@ -155,7 +155,14 @@ fig_target_type = px.pie(
     # sort = True
 )
 
-fig_target_type.update_layout(title_text = "Target type's distribution", title_x = 0.5)
+fig_target_type.update_layout(
+    title_text = "Target type's distribution", 
+    title_x = 0.96,
+    title_y = 0.22,
+    paper_bgcolor='rgba(0,0,0,0)',
+    plot_bgcolor='rgba(0,0,0,0)',
+    font=dict(family='Arial',size=14, color='gray'),
+    margin=dict(l=0, r=0, t=0, b=0))
 fig_target_type.update_traces(textinfo='value', textfont_size=12,
                   marker=dict(line=dict(color='#000000', width=2)))
 
@@ -192,7 +199,14 @@ fig_attack_type = px.pie(
 )
 
 
-fig_attack_type.update_layout(title_text = "Attack type's distribution", title_x = 0.5)
+fig_attack_type.update_layout(
+    title_text = "Attack type's distribution", 
+    title_x = 0.96,
+    title_y = 0.22,
+    paper_bgcolor='rgba(0,0,0,0)',
+    plot_bgcolor='rgba(0,0,0,0)',
+    font=dict(family='Arial',size=14, color='gray'),
+    margin=dict(l=0, r=0, t=0, b=0))
 fig_attack_type.update_traces(textinfo='value', textfont_size=12,
                   marker=dict(line=dict(color='#000000', width=2)))
 
@@ -216,7 +230,7 @@ layout = html.Div([
             dcc.Graph(figure=fig_success_by_region),
             dcc.Graph(figure=fig_attack_type)
         ],
-        style={'display': 'grid', 'gridTemplateColumns': '1fr 1fr 1fr', 'gap': '1px', 'margin-left': '30px'}
+        style={'display': 'grid', 'gridTemplateColumns': '1fr 1fr 1fr', 'gap': '1px', 'margin-left': '30px', 'height':'300px'}
     ),
     html.Div(
         [
