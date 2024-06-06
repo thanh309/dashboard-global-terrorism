@@ -23,8 +23,10 @@ complete_data.drop(['Country_x'], axis=1,  inplace=True)
 complete_data.rename(columns={'Country_y': 'Country'}, inplace=True)
 complete_data.sort_values(['year', 'total_casualties'], inplace=True)
 complete_data.reset_index(drop=True, inplace=True)
+# complete_data = complete_data.query('total_casualties < 5000')
 
-all_kill_data = complete_data.groupby(['country_code', 'Country'])['total_casualties'].sum().reset_index()
+all_kill_data = data[['year', 'country_code', 'country_txt', 'total_casualties']]
+all_kill_data = all_kill_data.groupby(['country_code', 'country_txt'])['total_casualties'].sum().reset_index()
 log_bin_edges = [0, 30, 100, 300, 1000, 3000, 10000, 30000, 100000, 300000000]
 log_bin_labels = ['0-30', '30-100', '100-300', '300-1000', '1000-3000', '3000-10000', '10000-30000', '30000-100000', '>100000']
 all_kill_data['total_casualties_cat'] = pd.cut(all_kill_data['total_casualties'], bins=log_bin_edges, labels=log_bin_labels, include_lowest=True)
@@ -36,7 +38,8 @@ fig1 = px.choropleth(complete_data,
                     locations='country_code',
                     color='total_casualties',
                     hover_data={'Country': True, 'total_casualties': True, 'country_code': False, 'year': False},
-                    range_color=(0, np.max(complete_data['total_casualties'])),
+                    # range_color=(0, np.max(complete_data['total_casualties'])),
+                    range_color=(0, 5000),
                     animation_frame='year',
                     color_continuous_scale='hot',
                     labels={'total_casualties':'Total number of casualties'},
@@ -114,6 +117,32 @@ fig3.update_traces(
     hovertemplate='%{label}<br>Number of attacks: %{value}<extra></extra>'
 )
 
+
+count_atk_type_data = data[['region_txt', 'attack_type']]
+count_atk_type_data = count_atk_type_data.groupby(['region_txt', 'attack_type']).size().reset_index(name='count')
+
+fig4 = px.bar(
+    count_atk_type_data,
+    x='count',
+    y='region_txt',
+    color='attack_type',
+    color_discrete_sequence=px.colors.sequential.Plasma,
+    template='plotly_dark',
+    labels={'region_txt':'Region', 'attack_type':'Type of Attack', 'count':'Number of Attacks'},
+    orientation='h',
+    title='Type of attack per region'
+)
+
+fig4.update_layout(
+    bargap=0,
+    bargroupgap=0.05,
+    barmode="stack",
+)
+
+fig4.update_traces(marker_line_width=0)
+
+
+
 @callback(
     Output(component_id="selected-figure", component_property="figure"),
     Input(component_id="figure-dropdown", component_property="value")
@@ -136,15 +165,13 @@ layout = html.Div(children=[
                 {"label": "Global casualty trends by year", "value": "fig1"},
                 {"label": "Total number of casualties", "value": "fig2"},
             ],
-            value="fig1",
-            style={'height':'5vh'},
+            value="fig1"
         ),
         # dcc.Graph(id="selected-figure")
-        dcc.Graph(id="selected-figure", style={'height':'45vh'})
+        dcc.Graph(id="selected-figure")
     ]),
     html.Div(children=[
-        # html.Br(),
-        # dcc.Graph(id='fig3', figure=fig3)
-        dcc.Graph(id='fig3', figure=fig3, style={'height':'50vh'})
+        dcc.Graph(id='fig3', figure=fig3, style={'width': '50%', 'display': 'inline-block'}),
+        dcc.Graph(id='fig4', figure=fig4, style={'width': '50%', 'display': 'inline-block'})
     ])
-],  style={'display': 'grid', 'gridTemplateColumns': '1fr 1fr'})
+])
