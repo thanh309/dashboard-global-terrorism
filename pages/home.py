@@ -174,7 +174,7 @@ fig_target_type.update_layout(
     plot_bgcolor='rgba(0,0,0,0)',
     font=dict(family='Arial',size=14, color='gray'),
     margin=dict(l=0, r=0, t=0, b=0))
-fig_target_type.update_traces(textinfo='value', textfont_size=12,
+fig_target_type.update_traces(textinfo='percent', textfont_size=12,
                   marker=dict(line=dict(color='#000000', width=2)))
 
 
@@ -218,7 +218,7 @@ fig_attack_type.update_layout(
     plot_bgcolor='rgba(0,0,0,0)',
     font=dict(family='Arial',size=14, color='gray'),
     margin=dict(l=0, r=0, t=0, b=0))
-fig_attack_type.update_traces(textinfo='value', textfont_size=12,
+fig_attack_type.update_traces(textinfo='percent', textfont_size=12,
                   marker=dict(line=dict(color='#000000', width=2)))
 
 layout = html.Div([
