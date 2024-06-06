@@ -123,9 +123,10 @@ fig_success_by_region = px.treemap(
 fig_success_by_region.update_layout(
     margin=dict(l=50, r=50, t=40, b=20),
 )
-fig_success_by_region.update_layout(height=600, width=800,
-                  ) 
+# fig_success_by_region.update_layout(height=600, width=800,
+#                   ) 
 fig_success_by_region.update_traces(root_color="black")
+fig_success_by_region.update_layout(paper_bgcolor='rgba(0,1,0,1)',)
 fig_success_by_region.update_traces(hovertemplate='total=%{value}<extra></extra>')
 # fig_success_by_region.update_layout(height=300, width=400) 
 
@@ -232,7 +233,7 @@ layout = html.Div([
             dcc.Graph(figure=fig_attack_type),
             dcc.Graph(figure=fig_success_by_region)
         ],
-        style={'display': 'grid', 'gridTemplateColumns': '1fr 1fr 1fr', 'gap': '1px', 'margin-left': '30px', 'height':'300px'}
+        style={'display': 'grid', 'gridTemplateColumns': '1fr 1fr 1fr', 'gap': '1px', 'margin-left': '50px','margin-right': '50px',}
     ),
     html.Div(
         [
