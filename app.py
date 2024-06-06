@@ -4,22 +4,15 @@ import dash_bootstrap_components as dbc
 import plotly.express as px
 import pandas as pd
 
-# df = pd.read_csv('assets/data.csv', encoding='ISO-8859-1')
-# df = pd.read_pickle('assets/cleaned_data.pkl')
 
 # Initialize the Dash app
 app = Dash(__name__, external_stylesheets=[dbc.themes.COSMO, 'assets/gtd.css'], use_pages=True)
-# print(dash.page_registry.values())
 app.title = "Global Terrorism Dashboard"
 
 # Define the desired order of the pages
-desired_order = ['Introduction', 'Home', 'Geo dashboard', 'Time dashboard']  # Replace with actual page names or relative paths
-
-# Create a mapping of page names to page objects
+page_order = ['Introduction', 'Home', 'Geo dashboard', 'Time dashboard']
 page_dict = {page['name']: page for page in dash.page_registry.values()}
-
-# Arrange pages according to the desired order
-ordered_pages = [page_dict[name] for name in desired_order if name in page_dict]
+ordered_pages = [page_dict[name] for name in page_order if name in page_dict]
 
 app.layout = html.Div([
     html.H1(
@@ -41,8 +34,7 @@ app.layout = html.Div([
     'background-repeat':'no-repeat',
     'background-position':'center',
     'background-attachment': 'fixed',
-    'height': '200vh', # Ensure the background covers the full height of the viewport
-    # 'position': 'fixed',
+    'height': '200vh',
     'top': 0,
     'left': 0,
     'z-index': -1
