@@ -39,7 +39,7 @@ fig_top_groups.update_layout(
     yaxis=dict(showline=True, linecolor='white', linewidth=2),
     paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(0,0,0,0)',
-    font=dict(family='Arial',size=14, color='gray')
+    font=dict(family='Arial',size=14, color='white')
 )
 fig_top_groups.update_traces(
     marker_color='#FF0000'
@@ -76,7 +76,7 @@ fig_top_weapons.update_layout(
     yaxis=dict(showline=True, linecolor='white', linewidth=2),
     paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(0,0,0,0)',
-    font=dict(family='Arial',size=14, color='gray')
+    font=dict(family='Arial',size=14, color='white')
 )
 fig_top_weapons.update_traces(
     marker_color='#FF0000'
@@ -115,7 +115,7 @@ fig_success_by_region = px.treemap(
     color='success',
     color_discrete_sequence=["rgb(245, 22, 22)", "rgb(46, 198, 240)",  "rgb(235, 202, 96)"],
     # textinfo = "value",
-    # title="Total Attacks by Region",  # Update title if needed
+    title="Total Attacks by Region",  # Update title if needed
     # textposition = 'middle center'
     hover_data=['total']
 )
@@ -129,7 +129,7 @@ fig_success_by_region.update_layout(
     title_y = 0.975,
     paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(0,0,0,0)',
-    font=dict(family='Arial',size=14, color='gray'),
+    font=dict(family='Arial',size=14, color='white'),
     margin=dict(l=0, r=0, t=0, b=0))
 fig_success_by_region.update_traces(hovertemplate='total=%{value}<extra></extra>')
 
@@ -163,7 +163,7 @@ fig_target_type.update_layout(
     title_y = 0.975,
     paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(0,0,0,0)',
-    font=dict(family='Arial',size=14, color='gray'),
+    font=dict(family='Arial',size=14, color='white'),
     margin=dict(l=0, r=0, t=0, b=0),
     legend={
         "x":0.9,
@@ -213,7 +213,7 @@ fig_attack_type.update_layout(
     title_y = 0.975,
     paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(0,0,0,0)',
-    font=dict(family='Arial',size=14, color='gray'),
+    font=dict(family='Arial',size=14, color='white'),
     margin=dict(l=0, r=0, t=0, b=0),
     legend={
         "x":0.9,
