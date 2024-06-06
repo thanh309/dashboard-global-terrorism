@@ -130,6 +130,20 @@ layout = html.Div([
     ],
     className='content')
 
+annotation_arg = {
+    'font':{'color':'white', 'size':14},
+    'bgcolor':'rgba(255, 255, 255, 0)',
+    'showarrow':True,
+    'arrowhead':1,
+    'axref':'pixel',
+    'ayref':'pixel',
+    'arrowwidth':2,
+    'arrowcolor':'white',
+    'ax':0,
+    'ay':-150,
+    'borderpad':3
+}
+
 @callback(
     Output('graph-attacks', 'figure'),
     Output('graph-fatalities', 'figure'),
@@ -213,6 +227,32 @@ def update_graphs(selected_regions, selected_status):
             title=dict(font=dict(color='white')),  # Change color of title to white
             xaxis_title=dict(font=dict(color='white')),  # Change color of x-axis label to white
             yaxis_title=dict(font=dict(color='white'))   # Change color of y-axis label to white
+        )
+        fig.add_annotation(
+            arg=annotation_arg,
+            x=2001,
+            y=0,
+            text="September 11 <br> Incident",
+            ay=-300
+        )
+        fig.add_annotation(
+            arg=annotation_arg,
+            x=2014,
+            y=0,
+            text="Northern Iraq <br> Offensive by ISIL",
+            ay=-300
+        )
+        fig.add_annotation(
+            arg=annotation_arg,
+            x=1995,
+            y=0,
+            text="Tokyo Subway <br> Sarin Attack",
+        )
+        fig.add_annotation(
+            arg=annotation_arg,
+            x=1979,
+            y=0,
+            text="Active Contras <br> in Nicaragua",
         )
 
     return fig_attacks, fig_fatalities, fig_injuries, fig_damage
