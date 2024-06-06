@@ -2,24 +2,28 @@ import dash
 from dash import Dash, dcc, html, Input, Output, callback
 import plotly.express as px
 import pandas as pd
+import plotly.io as pio
 
 dash.register_page(__name__)
-
+colors = [
+    '#636efa', '#EF553B', '#00cc96', '#ab63fa', '#FFA15A',
+    '#19d3f3', '#FF6692', '#B6E880', '#FF97FF', '#FECB52', '#2ca02c', '#999999'
+]
 
 # Load the data
 df = pd.read_pickle('assets/cleaned_data.pkl')
 
-# Replace all -9 in 'prorperty_damage' column with 0
+# Replace all -99 in 'prorperty_damage' column with 0
 df['prorperty_damage'] = df['prorperty_damage'].apply(lambda x: max(x, 0))
 
 # Replace 'iyear' and 'country' with the actual column names
 year_column = 'year'  # Adjust this if the actual column name is different
-region_column = 'region_txt'  # Adjust this if the actual column name is different
+country_column = 'region_txt'  # Adjust this if the actual column name is different
 
 # Preprocess the data
 df[year_column] = pd.to_datetime(df[year_column], format='%Y').dt.year  # Ensure the year column is in integer format
-df_grouped_attacks = df.groupby([year_column, region_column]).size().reset_index(name='total_attacks')
-df_grouped = df.groupby([year_column, region_column]).agg({'total_killed':'sum', 
+df_grouped_attacks = df.groupby([year_column, country_column]).size().reset_index(name='total_attacks')
+df_grouped = df.groupby([year_column, country_column]).agg({'total_killed':'sum', 
                                                             'total_wounded':'sum',
                                                             'prorperty_damage':'sum'}).reset_index()
 
@@ -27,26 +31,24 @@ df_grouped = df.groupby([year_column, region_column]).agg({'total_killed':'sum',
 all_years = pd.DataFrame({year_column: range(df[year_column].min(), df[year_column].max() + 1)})
 
 # Merge with the grouped data to include all years for each country
-df_merged_attacks = df_grouped_attacks.merge(all_years, on=year_column, how='right').fillna({region_column: 'Unknown', 'total_attacks': 0})
-df_merged = df_grouped.merge(all_years, on=year_column, how='right').fillna({region_column: 'Unknown', 
+df_merged_attacks = df_grouped_attacks.merge(all_years, on=year_column, how='right').fillna({country_column: 'Unknown', 'total_attacks': 0})
+df_merged = df_grouped.merge(all_years, on=year_column, how='right').fillna({country_column: 'Unknown', 
                                                                             'total_killed': 0, 
                                                                             'total_wounded': 0,
                                                                             'prorperty_damage': 0})
-merged_df = pd.merge(df_merged_attacks, df_merged, on=[year_column, region_column], how='outer')
+merged_df = pd.merge(df_merged_attacks, df_merged, on=[year_column, country_column], how='outer')
 
 # Filter out the "Unknown" region
-merged_df = merged_df[merged_df[region_column] != 'Unknown']
+merged_df = merged_df[merged_df[country_column] != 'Unknown']
 
 # Pivot the table to get years as rows and countries as columns
-df_pivot = merged_df.pivot(index=year_column, columns=region_column, values=['total_attacks', 
+df_pivot = merged_df.pivot(index=year_column, columns=country_column, values=['total_attacks', 
                                                                                 'total_killed', 
                                                                                 'total_wounded', 
                                                                                 'prorperty_damage']).fillna(0)
 # Get the unique regions excluding 'Unknown'
-regions = df[region_column].unique()
+regions = df[country_column].unique()
 # regions = [region for region in regions if region != 'Unknown']
-colors = ['#636efa', '#EF553B', '#00cc96', '#ab63fa', '#FFA15A',
-    '#19d3f3', '#FF6692', '#B6E880', '#FF97FF', '#FECB52', '#2ca02c', '#999999']
 color_map = {regions[i]:colors[i] for i in range(len(regions))}
 # Create the Plotly figures
 fig_attacks = px.area(df_pivot['total_attacks'], 
@@ -88,6 +90,7 @@ for fig in [fig_attacks, fig_fatalities, fig_injuries, fig_damage]:
         plot_bgcolor='rgba(0,0,0,0)',
         font=dict(color='white'),  # Change color of text to white
         title=dict(font=dict(color='white')),  # Change color of title to white
+        title_y=0.95,
         xaxis_title=dict(font=dict(color='white')),  # Change color of x-axis label to white
         yaxis_title=dict(font=dict(color='white'))   # Change color of y-axis label to white
     )
@@ -162,20 +165,20 @@ def update_graphs(selected_regions, selected_status):
         filtered_df = df
 
     # Process data for selected regions and status
-    filtered_grouped_attacks = filtered_df.groupby([year_column, region_column]).size().reset_index(name='total_attacks')
-    filtered_grouped = filtered_df.groupby([year_column, region_column]).agg({'total_killed': 'sum',
+    filtered_grouped_attacks = filtered_df.groupby([year_column, country_column]).size().reset_index(name='total_attacks')
+    filtered_grouped = filtered_df.groupby([year_column, country_column]).agg({'total_killed': 'sum',
                                                                                 'total_wounded': 'sum',
                                                                                 'prorperty_damage': 'sum'}).reset_index()
     filtered_merged_attacks = filtered_grouped_attacks.merge(all_years, on=year_column, how='right').fillna(
-        {region_column: 'Unknown', 'total_attacks': 0})
-    filtered_merged = filtered_grouped.merge(all_years, on=year_column, how='right').fillna({region_column: 'Unknown',
+        {country_column: 'Unknown', 'total_attacks': 0})
+    filtered_merged = filtered_grouped.merge(all_years, on=year_column, how='right').fillna({country_column: 'Unknown',
                                                                                             'total_killed': 0,
                                                                                             'total_wounded': 0,
                                                                                             'prorperty_damage': 0})
-    filtered_merged_df = pd.merge(filtered_merged_attacks, filtered_merged, on=[year_column, region_column],
+    filtered_merged_df = pd.merge(filtered_merged_attacks, filtered_merged, on=[year_column, country_column],
                                     how='outer')
-    filtered_merged_df = filtered_merged_df[filtered_merged_df[region_column] != 'Unknown']
-    filtered_pivot = filtered_merged_df.pivot(index=year_column, columns=region_column,
+    filtered_merged_df = filtered_merged_df[filtered_merged_df[country_column] != 'Unknown']
+    filtered_pivot = filtered_merged_df.pivot(index=year_column, columns=country_column,
                                             values=['total_attacks', 'total_killed', 'total_wounded',
                                                     'prorperty_damage']).fillna(0)
 
@@ -225,34 +228,39 @@ def update_graphs(selected_regions, selected_status):
             plot_bgcolor='rgba(0,0,0,0)',
             font=dict(color='white'),  # Change color of text to white
             title=dict(font=dict(color='white')),  # Change color of title to white
+            title_y=0.95,
             xaxis_title=dict(font=dict(color='white')),  # Change color of x-axis label to white
             yaxis_title=dict(font=dict(color='white'))   # Change color of y-axis label to white
         )
-        fig.add_annotation(
-            arg=annotation_arg,
-            x=2001,
-            y=0,
-            text="September 11 <br> Incident",
-            ay=-300
-        )
-        fig.add_annotation(
-            arg=annotation_arg,
-            x=2014,
-            y=0,
-            text="Northern Iraq <br> Offensive by ISIL",
-            ay=-300
-        )
-        fig.add_annotation(
-            arg=annotation_arg,
-            x=1995,
-            y=0,
-            text="Tokyo Subway <br> Sarin Attack",
-        )
-        fig.add_annotation(
-            arg=annotation_arg,
-            x=1979,
-            y=0,
-            text="Active Contras <br> in Nicaragua",
-        )
+        if 'North America' in selected_regions and selected_status in ['Successful', '(All)']:
+            fig.add_annotation(
+                arg=annotation_arg,
+                x=2001,
+                y=0,
+                text="September 11 <br> Incident",
+                ay=-300
+            )
+        if 'Middle East & North Africa' in selected_regions and selected_status in ['Successful', '(All)']:
+            fig.add_annotation(
+                arg=annotation_arg,
+                x=2014,
+                y=0,
+                text="Northern Iraq <br> Offensive by ISIL",
+                ay=-300
+            )
+        if 'East Asia' in selected_regions and selected_status in ['Successful', '(All)']:
+            fig.add_annotation(
+                arg=annotation_arg,
+                x=1995,
+                y=0,
+                text="Tokyo Subway <br> Sarin Attack",
+            )
+        if 'Central America & Caribbean' in selected_regions and selected_status in ['Successful', '(All)']:
+            fig.add_annotation(
+                arg=annotation_arg,
+                x=1979,
+                y=0,
+                text="Active Contras <br> in Nicaragua",
+            )
 
     return fig_attacks, fig_fatalities, fig_injuries, fig_damage
