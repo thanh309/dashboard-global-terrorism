@@ -129,6 +129,7 @@ def update_figure(selected_value):
 
 layout = html.Div(children=[
     html.Div(children=[
+        # html.Br(),
         dcc.Dropdown(
             id="figure-dropdown",
             options=[
@@ -136,10 +137,14 @@ layout = html.Div(children=[
                 {"label": "Total number of casualties", "value": "fig2"},
             ],
             value="fig1",
+            style={'height':'5vh'},
         ),
-        dcc.Graph(id="selected-figure")
+        # dcc.Graph(id="selected-figure")
+        dcc.Graph(id="selected-figure", style={'height':'45vh'})
     ]),
     html.Div(children=[
-        dcc.Graph(id='fig3', figure=fig3)
+        # html.Br(),
+        # dcc.Graph(id='fig3', figure=fig3)
+        dcc.Graph(id='fig3', figure=fig3, style={'height':'50vh'})
     ])
 ],  style={'display': 'grid', 'gridTemplateColumns': '1fr 1fr'})
