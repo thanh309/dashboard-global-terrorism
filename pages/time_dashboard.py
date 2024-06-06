@@ -76,7 +76,7 @@ fig_damage = px.area(df_pivot['prorperty_damage'],
                     color_discrete_map=color_map)
 
 # Set showlegend=False for fig_fatalities, fig_injuries, and fig_damage
-# fig_attacks.update_traces(showlegend=False)
+fig_attacks.update_traces(showlegend=False)
 fig_fatalities.update_traces(showlegend=False)
 fig_injuries.update_traces(showlegend=False)
 fig_damage.update_traces(showlegend=False)
@@ -113,7 +113,10 @@ layout = html.Div([
             html.Label('Filter by:', style={'font-size':'18px', 'color': 'white'}), 
             dcc.Checklist(
                 id='region-checklist',
-                options=[{'label': html.Span(regions[i], style={'background-color':colors[i]}), 'value': regions[i]} for i in range(len(regions))],
+                options=[{'label': [
+                    html.Span('   ', style={'backgroundColor': colors[i], 'display': 'inline-block', 'height': '10px', 'width': '30px', 'marginRight': '5px', 'marginLeft': '5px'}),
+                    html.Span(regions[i])], 'value': regions[i]} 
+                    for i in range(len(regions))],
                 value=regions,
                 labelStyle={'display': 'inline-block', 'margin-right': '10px', 'color':'white'},
                 style={'display': 'grid', 'gridTemplateColumns': '1fr 1fr 1fr 1fr', 'gap': '10px'}
@@ -196,7 +199,7 @@ def update_graphs(selected_regions, selected_status):
                         title='Property Damage in USD per Year by Region',
                         color_discrete_map=color_map)
 
-    # fig_attacks.update_traces(showlegend=False)
+    fig_attacks.update_traces(showlegend=False)
     fig_fatalities.update_traces(showlegend=False)
     fig_injuries.update_traces(showlegend=False)
     fig_damage.update_traces(showlegend=False)
