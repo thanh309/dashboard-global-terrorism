@@ -127,6 +127,74 @@ fig_success_by_region.update_layout(
 )
 fig_success_by_region.update_layout(height=300, width=400) 
 
+target_type = df.groupby('target_type')['target_type'].count()
+tar_type_df = pd.DataFrame({'target_type': target_type.index,
+                           'total': target_type.values})
+tar_type_df = tar_type_df.sort_values(by='total', ascending=False)
+
+top_5 = tar_type_df.head(5)
+others = tar_type_df.iloc[5:]
+
+others_total = others['total'].sum()
+others_df = pd.DataFrame({'target_type': 'Others', 'total': others_total}, index=[0])
+
+tar_type_df = pd.concat([top_5, others_df], ignore_index=True)
+tar_type_df = tar_type_df.sort_values(by='total', ascending=False)
+
+fig_target_type = px.pie(
+    data_frame = tar_type_df,
+    names = 'target_type',
+    values = 'total',
+    hole = 0.5,
+    color='target_type',
+    # color_discrete_sequence=px.colors.sequential.Brwnyl,
+    # color_discrete_sequence=px.colors.sequential.YlOrBr,
+    # color_discrete_sequence=px.colors.sequential.OrRd,
+    color_discrete_sequence=px.colors.sequential.Oryel,
+    
+    # sort = True
+)
+
+fig_target_type.update_layout(title_text = "Target type's distribution", title_x = 0.5)
+fig_target_type.update_traces(textinfo='value', textfont_size=12,
+                  marker=dict(line=dict(color='#000000', width=2)))
+
+
+attack_type = df.groupby('attack_type')['attack_type'].count()
+att_type_df = pd.DataFrame({'attack_type': attack_type.index,
+                           'total': attack_type.values})
+att_type_df = att_type_df.sort_values(by='total', ascending=False)
+
+top_5 = att_type_df.head(5)
+others = att_type_df.iloc[5:]
+others_total = others['total'].sum()
+others_df = pd.DataFrame({'attack_type': 'Others', 'total': others_total}, index=[0])
+
+# Concatenate top_5 and others_df
+att_type_df = pd.concat([top_5, others_df], ignore_index=True)
+att_type_df = att_type_df.sort_values(by='total', ascending=False)
+
+fig_attack_type = px.pie(
+    data_frame = att_type_df,
+    names = 'attack_type',
+    values = 'total',
+    hole = 0.5,
+    color='attack_type',
+    # color_discrete_sequence=px.colors.sequential.Brwnyl,
+    # color_discrete_sequence=px.colors.sequential.YlOrBr,
+    # color_discrete_sequence=px.colors.sequential.OrRd,
+    color_discrete_sequence=px.colors.sequential.Oryel
+
+    # hovertext='%{names}<br>Number of attacks: %{values}<extra></extra>',
+    # hover_name=['target_type'],
+    # hover_data= ['target_type']
+
+)
+
+
+fig_attack_type.update_layout(title_text = "Attack type's distribution", title_x = 0.5)
+fig_attack_type.update_traces(textinfo='value', textfont_size=12,
+                  marker=dict(line=dict(color='#000000', width=2)))
 
 layout = html.Div([
     html.Div(
@@ -143,10 +211,12 @@ layout = html.Div([
         style={'display': 'grid', 'gridTemplateColumns': '1fr 1fr 1fr 1fr', 'gap': '10px'}
     ),
     html.Div(
-        [
-            dcc.Graph(figure=fig_success_by_region)
+        [   
+            dcc.Graph(figure=fig_target_type),
+            dcc.Graph(figure=fig_success_by_region),
+            dcc.Graph(figure=fig_attack_type)
         ],
-        style={'display': 'grid', 'gridTemplateColumns': '0.5r', 'gap': '10px', 'margin-left': '70px'}
+        style={'display': 'grid', 'gridTemplateColumns': '1fr 1fr 1fr', 'gap': '1px', 'margin-left': '30px'}
     ),
     html.Div(
         [
