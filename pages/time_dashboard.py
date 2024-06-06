@@ -9,6 +9,7 @@ colors = [
     '#636efa', '#EF553B', '#00cc96', '#ab63fa', '#FFA15A',
     '#19d3f3', '#FF6692', '#B6E880', '#FF97FF', '#FECB52', '#2ca02c', '#999999'
 ]
+
 # Load the data
 df = pd.read_pickle('assets/cleaned_data.pkl')
 
@@ -45,34 +46,37 @@ df_pivot = merged_df.pivot(index=year_column, columns=country_column, values=['t
                                                                                 'total_killed', 
                                                                                 'total_wounded', 
                                                                                 'prorperty_damage']).fillna(0)
-
+# Get the unique regions excluding 'Unknown'
+regions = df[country_column].unique()
+# regions = [region for region in regions if region != 'Unknown']
+color_map = {regions[i]:colors[i] for i in range(len(regions))}
 # Create the Plotly figures
 fig_attacks = px.area(df_pivot['total_attacks'], 
                         x=df_pivot.index, 
                         y=df_pivot['total_attacks'].columns, 
                         title='Number of Terrorist Attacks per Year by Region',
-                        color_discrete_sequence=colors)
+                        color_discrete_map=color_map)
 
 fig_fatalities = px.area(df_pivot['total_killed'], 
                         x=df_pivot.index, 
                         y=df_pivot['total_killed'].columns,
                         title='Number of Fatalities per Year by Region',
-                        color_discrete_sequence=colors)
+                        color_discrete_map=color_map)
 
 fig_injuries = px.area(df_pivot['total_wounded'], 
                         x=df_pivot.index, 
                         y=df_pivot['total_wounded'].columns, 
                         title='Number of Injuries per Year by Region',
-                        color_discrete_sequence=colors)
+                        color_discrete_map=color_map)
 
 fig_damage = px.area(df_pivot['prorperty_damage'], 
                     x=df_pivot.index, 
                     y=df_pivot['prorperty_damage'].columns, 
                     title='Property Damage in USD per Year by Region',
-                    color_discrete_sequence=colors)
+                    color_discrete_map=color_map)
 
 # Set showlegend=False for fig_fatalities, fig_injuries, and fig_damage
-# fig_attacks.update_traces(showlegend=False)
+fig_attacks.update_traces(showlegend=False)
 fig_fatalities.update_traces(showlegend=False)
 fig_injuries.update_traces(showlegend=False)
 fig_damage.update_traces(showlegend=False)
@@ -89,9 +93,6 @@ for fig in [fig_attacks, fig_fatalities, fig_injuries, fig_damage]:
         xaxis_title=dict(font=dict(color='white')),  # Change color of x-axis label to white
         yaxis_title=dict(font=dict(color='white'))   # Change color of y-axis label to white
     )
-# Get the unique regions excluding 'Unknown'
-regions = df[country_column].unique()
-# regions = [region for region in regions if region != 'Unknown']
 
 # Layout of the Dash app
 layout = html.Div([
@@ -173,29 +174,29 @@ def update_graphs(selected_regions, selected_status):
                         x=filtered_attacks.index,
                         y=filtered_attacks.columns,
                         title='Number of Terrorist Attacks per Year by Region',
-                        color_discrete_sequence=colors)
+                        color_discrete_map=color_map)
 
     fig_fatalities = px.area(filtered_fatalities,
                             x=filtered_fatalities.index,
                             y=filtered_fatalities.columns,
                             title='Number of Fatalities per Year by Region',
-                            color_discrete_sequence=colors)
+                            color_discrete_map=color_map)
 
 
     fig_injuries = px.area(filtered_injuries,
                             x=filtered_injuries.index,
                             y=filtered_injuries.columns,
                             title='Number of Injuries per Year by Region',
-                            color_discrete_sequence=colors)
+                            color_discrete_map=color_map)
 
 
     fig_damage = px.area(filtered_damage,
                         x=filtered_damage.index,
                         y=filtered_damage.columns,
                         title='Property Damage in USD per Year by Region',
-                        color_discrete_sequence=colors)
+                        color_discrete_map=color_map)
 
-    # fig_attacks.update_traces(showlegend=False)
+    fig_attacks.update_traces(showlegend=False)
     fig_fatalities.update_traces(showlegend=False)
     fig_injuries.update_traces(showlegend=False)
     fig_damage.update_traces(showlegend=False)
