@@ -115,7 +115,7 @@ fig_success_by_region = px.treemap(
     color='success',
     color_discrete_sequence=["rgb(245, 22, 22)", "rgb(46, 198, 240)",  "rgb(235, 202, 96)"],
     # textinfo = "value",
-    title="Treemap: Total Attacks by Region",  # Update title if needed
+    # title="Total Attacks by Region",  # Update title if needed
     # textposition = 'middle center'
     hover_data=['total']
 )
@@ -124,7 +124,6 @@ fig_success_by_region.update_layout(
     margin=dict(l=50, r=50, t=40, b=20),
 )
 # fig_success_by_region.update_layout(height=600, width=800,
-#                   ) 
 fig_success_by_region.update_traces(root_color="black")
 fig_success_by_region.update_layout(
     title_y = 0.975,
