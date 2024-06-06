@@ -5,7 +5,7 @@
     font-size: 30px;
     font-weight: 1000;
     color: transparent;
-    background: linear-gradient(red, white);;background-clip: text
+    background: linear-gradient(red, white);background-clip: text
 }
 
 
@@ -45,6 +45,11 @@
 
 .content {
     position: relative;
-    overflow: auto; /* Enable scrolling for content */
-    height: 100vh; /* Make the content take full viewport height */
+    overflow: visible; /* Enable scrolling for content */
+    height: 100vh; /*Make the content take full viewport height*/
+    /* display: grid; */
+    /* gap: 5px; */
+}
+.content > * {
+    margin-bottom: 5px; /* Set the bottom margin to create a gap */
 }
