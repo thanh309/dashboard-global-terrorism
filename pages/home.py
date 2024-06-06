@@ -115,7 +115,7 @@ fig_success_by_region = px.treemap(
     color='success',
     color_discrete_sequence=["rgb(245, 22, 22)", "rgb(46, 198, 240)",  "rgb(235, 202, 96)"],
     # textinfo = "value",
-    title="Treemap: Total Attacks by Region",  # Update title if needed
+    # title="Total Attacks by Region",  # Update title if needed
     # textposition = 'middle center'
     hover_data=['total']
 )
@@ -124,11 +124,19 @@ fig_success_by_region.update_layout(
     margin=dict(l=50, r=50, t=40, b=20),
 )
 # fig_success_by_region.update_layout(height=600, width=800,
-#                   ) 
 fig_success_by_region.update_traces(root_color="black")
 fig_success_by_region.update_layout(paper_bgcolor='rgba(0,1,0,1)',)
 fig_success_by_region.update_traces(hovertemplate='total=%{value}<extra></extra>')
-# fig_success_by_region.update_layout(height=300, width=400) 
+# fig_success_by_region.update_layout(
+#     title_text = "Target type's distribution", 
+#     title_x = 0.96,
+#     title_y = 0.22,
+#     paper_bgcolor='rgba(0,0,0,0)',
+#     plot_bgcolor='rgba(0,0,0,0)',
+#     font=dict(family='Arial',size=14, color='gray'),
+#     margin=dict(l=0, r=0, t=0, b=0))
+fig_success_by_region.update_traces(textfont_size=12,
+                  marker=dict(line=dict(color='#000000', width=2)))
 
 target_type = df.groupby('target_type')['target_type'].count()
 tar_type_df = pd.DataFrame({'target_type': target_type.index,
